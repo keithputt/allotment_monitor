@@ -10,13 +10,13 @@ class Sensors:
         self.battery = Battery()
 
     def get_measurements(self):
-        bat_voltage = self.battery.voltage
-        bat_percent = self.get_battery_percent()
-        temperature = self.get_temperature()
-        humidity = self.get_humidity()
-        moisture = self.get_moisture()
-
-        measurements = {"temperature":temperature, "humidity":humidity, "moisture":moisture, "battery" : {"voltage":bat_voltage, "percent":bat_percent}}
+        try:
+            self.dht.measure()
+        except RuntimeError:
+            print("DHT11 not connected")
+            self.dht.measure()
+            
+        measurements = {"temperature":self.get_temperature(), "humidity":self.get_humidity(), "moisture":self.get_moisture(), "battery" : {"charge_status":self.get_battery_charge_status(),"voltage":self.get_battery_voltage(), "percent":self.get_battery_percent()}}
         return measurements
 
     def get_temperature(self):
@@ -27,6 +27,12 @@ class Sensors:
 
     def get_moisture(self):
         return self.moisture.value / 65536
+    
+    def get_battery_voltage(self):
+        return self.battery.voltage
+    
+    def get_battery_charge_status(self):
+        return self.battery.charge_status
 
     # Simple example, not precise for non-linear discharge
     def get_battery_percent(self):
