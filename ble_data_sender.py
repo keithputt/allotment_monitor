@@ -1,4 +1,4 @@
-# create a python class that sends monitoring data using the BLERadio
+# Class to send json measurement data over BLE UART
 import json
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
@@ -9,17 +9,16 @@ class BLEMonitor:
 
 
     def __init__(self):
-        # mapping of ble address to unique name
-        device_map = {"<Address d6:95:f4:1e:2b:d8>":"Allotment_z1"}
+        # mapping of ble address to unique name - giving each device a name
+        device_map = {"<Address d6:95:f4:1e:2b:d8>":"Allotment_1"}
 
         self.ble = BLERadio()
         adapter_address = str(self.ble._adapter.address)
         if adapter_address in device_map:
             self.name = device_map[adapter_address]
         else:
-            self.name = "Unknown device"
+            self.name = "Device not mapped"
         
-        print("Started BLEMonitor: " + self.name)
         self.ble.name = self.name
         self.uart_service = UARTService() 
         self.advertisement = ProvideServicesAdvertisement(self.uart_service)
@@ -46,7 +45,7 @@ class BLEMonitor:
     # create a method that sends a status update message using UART
     def send_monitoring_update(self, measurements):
         update_dict = {"device" : self.get_device_name(), "measurements":measurements}
-        update = json.dumps(update_dict)#'{"device":"' + self.get_device_name() + '", "measurements" : ' + measurements_json + '}\n'
+        update = json.dumps(update_dict)
         self.uart_service.write(update.encode())
 
     # create a method to disconnect
