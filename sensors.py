@@ -14,9 +14,12 @@ class Sensors:
             self.dht.measure()
         except RuntimeError:
             print("DHT11 not connected")
-            self.dht.measure()
-            
-        measurements = {"temperature":self.get_temperature(), "humidity":self.get_humidity(), "moisture":self.get_moisture(), "battery" : {"charge_status":self.get_battery_charge_status(),"voltage":self.get_battery_voltage(), "percent":self.get_battery_percent()}}
+            return {"message", "DHT11 not connected"}
+
+        measurements = {"temperature":self.get_temperature(), 
+                        "humidity":self.get_humidity(), 
+                        "moisture":self.get_moisture(), 
+                        "battery" :self.get_battery_status()}
         return measurements
 
     def get_temperature(self):
@@ -45,4 +48,7 @@ class Sensors:
             # Linear interpolation between 3.2V (0%) and 3.7V (100%)
             return (voltage - 3.2) / (3.7 - 3.2) * 100
 
-    
+    def get_battery_status(self):
+        return {"charge_status":self.get_battery_charge_status(),
+                "voltage":self.get_battery_voltage(), 
+                "percent":self.get_battery_percent()}
