@@ -3,7 +3,7 @@ from ble_data_sender import BLEMonitor
 from sensors import Sensors
 
 # update interval in seconds
-update_interval = 5
+update_interval = 10
 
 sensors = Sensors()
 ble = BLEMonitor()

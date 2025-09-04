@@ -19,6 +19,7 @@ class BLEMonitor:
         else:
             self.name = "Device not mapped"
         
+        print("Started BLEMonitor: " + self.name)
         self.ble.name = self.name
         self.uart_service = UARTService() 
         self.advertisement = ProvideServicesAdvertisement(self.uart_service)
